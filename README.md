@@ -94,7 +94,7 @@ See `SKILL.md` for all 6 workflow patterns, complete endpoint reference, and res
 
 ## Links
 
-- [docs.rekko.ai](https://docs.rekko.ai) — Full documentation
-- [OpenClaw integration guide](https://docs.rekko.ai/integrations/openclaw/overview) — Detailed setup
-- [API Reference](https://docs.rekko.ai/api-reference/introduction) — Direct API access
+- [rekko.ai/docs](https://rekko.ai/docs) — Full documentation
+- [OpenClaw integration guide](https://rekko.ai/docs/integrations/openclaw/overview) — Detailed setup
+- [API Reference](https://rekko.ai/docs/api-reference/introduction) — Direct API access
 - [Discord](https://discord.gg/qTPEk9aAZg) — Community
