@@ -1,0 +1,73 @@
+{
+  "overall_probability": 0.58,
+  "overall_confidence": 0.72,
+  "factors": [
+    {
+      "claim": "Kansas City's offense ranks top-5 in EPA/play this season",
+      "direction": "supports_yes",
+      "weight": 0.30,
+      "confidence": 0.88,
+      "prior": 0.50,
+      "posterior": 0.72,
+      "evidence": [
+        "KC ranked #3 in offensive EPA/play through Week 18 (0.142)",
+        "Mahomes averaging 8.4 YPA in playoffs, career high",
+        "Kelce's target share increased to 31% in postseason"
+      ]
+    },
+    {
+      "claim": "Opponent defensive line generates pressure above league average",
+      "direction": "supports_no",
+      "weight": 0.25,
+      "confidence": 0.75,
+      "prior": 0.50,
+      "posterior": 0.63,
+      "evidence": [
+        "Opponent pass rush win rate 48% (7th in NFL)",
+        "KC offensive line allowed 2.3 sacks/game in playoffs",
+        "Interior pressure specifically challenges Mahomes -- 71.2 passer rating when pressured up the middle"
+      ]
+    },
+    {
+      "claim": "Historical Super Bowl favorite covers at a reliable rate",
+      "direction": "supports_yes",
+      "weight": 0.15,
+      "confidence": 0.65,
+      "prior": 0.52,
+      "posterior": 0.56,
+      "evidence": [
+        "Favorites have won 57% of Super Bowls outright since 2000",
+        "3-point or smaller favorites win at 62% historically",
+        "Regression concern: small sample size (26 games)"
+      ]
+    },
+    {
+      "claim": "Injury report favors Kansas City",
+      "direction": "supports_yes",
+      "weight": 0.15,
+      "confidence": 0.80,
+      "prior": 0.50,
+      "posterior": 0.61,
+      "evidence": [
+        "KC has zero players on injury report as questionable or out",
+        "Opponent missing starting CB2 (torn ACL Week 17)",
+        "Injury edges are well-priced in by Super Bowl week -- limited alpha"
+      ]
+    },
+    {
+      "claim": "Coaching and game-planning edge",
+      "direction": "supports_yes",
+      "weight": 0.15,
+      "confidence": 0.68,
+      "prior": 0.55,
+      "posterior": 0.62,
+      "evidence": [
+        "Andy Reid 2-week preparation record: 7-2 after bye/extra rest",
+        "Reid's halftime adjustments ranked #1 by expected points added in 2nd half",
+        "Opponent coaching staff in first Super Bowl -- experience gap is real but hard to quantify"
+      ]
+    }
+  ],
+  "method": "weighted_bayesian",
+  "generated_at": "2026-02-05T18:00:00Z"
+}
