@@ -1,0 +1,11 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "Rekko AI Skill",
+  "description": "OpenClaw prediction market intelligence skill for autonomous AI trading agents — research, arbitrage, screening, and strategy.",
+  "rules": [
+    "Base URL is https://api.rekko.ai/v1 — all endpoint paths are relative to this",
+    "Supports both API key auth (Bearer token) and x402 USDC micropayments on Base L2",
+    "RekkoClient class handles authentication and x402 payment automatically",
+    "Analysis endpoints use async trigger-poll-retrieve pattern"
+  ]
+}
