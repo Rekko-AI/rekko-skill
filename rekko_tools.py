@@ -184,6 +184,73 @@ class RekkoClient:
         )
 
     # -----------------------------------------------------------------
+    # Events
+    # -----------------------------------------------------------------
+
+    async def list_events(
+        self, source: str = "", category: str = "", featured: bool | None = None, limit: int = 20
+    ) -> dict[str, Any]:
+        """List prediction market events with aggregate stats.
+
+        Args:
+            source: Filter by platform: "kalshi", "polymarket", or "" for all.
+            category: Filter by category (e.g. "politics", "crypto") or "" for all.
+            featured: Only featured events (true) or all (None).
+            limit: Maximum number of events to return (1-100).
+        """
+        params: dict[str, Any] = {"limit": limit}
+        if source:
+            params["source"] = source
+        if category:
+            params["category"] = category
+        if featured is not None:
+            params["featured"] = featured
+        return await self._request("GET", "/v1/events", params=params)
+
+    async def trending_events(self, limit: int = 20) -> dict[str, Any]:
+        """Get top trending prediction market events.
+
+        Args:
+            limit: Maximum number of trending events to return (1-50).
+        """
+        return await self._request(
+            "GET", "/v1/events/trending", params={"limit": limit}
+        )
+
+    async def search_events(self, query: str, limit: int = 20) -> dict[str, Any]:
+        """Search prediction market events using hybrid full-text + semantic search.
+
+        Args:
+            query: Search query (supports semantic + keyword matching).
+            limit: Maximum number of results to return (1-50).
+        """
+        return await self._request(
+            "GET", "/v1/events/search", params={"q": query, "limit": limit}
+        )
+
+    async def get_event(
+        self, slug: str, expand: str = ""
+    ) -> dict[str, Any]:
+        """Get detailed information about a single prediction market event.
+
+        Args:
+            slug: Event slug (e.g. 'kalshi:kxtrumpadminleave-26dec31').
+            expand: Comma-separated expansions (e.g. "markets").
+        """
+        params: dict[str, str] = {}
+        if expand:
+            params["expand"] = expand
+        return await self._request("GET", f"/v1/events/{slug}", params=params)
+
+    async def get_event_markets(self, slug: str) -> dict[str, Any]:
+        """List all individual outcome markets within an event.
+
+        Args:
+            slug: Event slug (e.g. 'kalshi:kxtrumpadminleave-26dec31').
+        """
+        return await self._request("GET", f"/v1/events/{slug}/markets")
+
+    # -----------------------------------------------------------------
     # Screening & discovery
     # -----------------------------------------------------------------
 

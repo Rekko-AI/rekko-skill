@@ -1,0 +1,74 @@
+{
+  "platform": "kalshi",
+  "market_id": "KXFED-26MAR19-T4.75",
+  "title": "Will the Fed cut rates at the March 2026 meeting?",
+  "recommendation": "BUY_YES",
+  "target_price": 0.35,
+  "edge": 0.12,
+  "confidence": 0.78,
+  "risk_rating": "medium",
+  "size_pct": 0.03,
+  "time_horizon": "days",
+  "hedge": "Buy NO on KXCPI-26APR-T3.5 at 0.85 as inflation hedge",
+  "causal": {
+    "overall_probability": 0.47,
+    "overall_confidence": 0.78,
+    "factors": [
+      {
+        "claim": "Inflation data supports a cut",
+        "direction": "supports_yes",
+        "weight": 0.35,
+        "confidence": 0.82,
+        "prior": 0.30,
+        "posterior": 0.55,
+        "evidence": [
+          "Feb CPI came in at 2.4%, below 2.6% consensus",
+          "Core PCE trending down for 3 consecutive months",
+          "Shelter inflation decelerating: OER fell to 5.1% from 5.4% YoY"
+        ]
+      },
+      {
+        "claim": "Labor market shows signs of softening",
+        "direction": "supports_yes",
+        "weight": 0.25,
+        "confidence": 0.71,
+        "prior": 0.25,
+        "posterior": 0.42,
+        "evidence": [
+          "NFP missed at +142K vs +185K expected",
+          "Unemployment ticked up to 4.1%",
+          "JOLTS openings at lowest since 2021"
+        ]
+      },
+      {
+        "claim": "Fed communication signals patience, not urgency",
+        "direction": "supports_no",
+        "weight": 0.25,
+        "confidence": 0.85,
+        "prior": 0.60,
+        "posterior": 0.68,
+        "evidence": [
+          "Powell's Feb 28 testimony: 'no need to rush'",
+          "Waller speech emphasized data-dependency",
+          "March dot plot projections still show 2 cuts in 2026"
+        ]
+      },
+      {
+        "claim": "Financial conditions are already accommodative",
+        "direction": "supports_no",
+        "weight": 0.15,
+        "confidence": 0.65,
+        "prior": 0.50,
+        "posterior": 0.58,
+        "evidence": [
+          "10Y yield at 3.95%, down 40bps since January",
+          "Credit spreads remain tight"
+        ]
+      }
+    ],
+    "method": "weighted_bayesian",
+    "generated_at": "2026-03-15T14:30:00Z"
+  },
+  "generated_at": "2026-03-15T14:30:00Z",
+  "expires_at": "2026-03-16T14:30:00Z"
+}
