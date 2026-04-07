@@ -99,10 +99,10 @@ Check `/v1/pricing` for current rates. Tier pricing (x402 USDC on Base):
 | Tier | Price | Endpoints |
 |---|---|---|
 | Free | $0.00 | `/v1/calibration`, `/v1/pricing`, `/v1/health` |
-| Listing | $0.01 | `/v1/markets`, `/v1/markets/{platform}/{market_id}`, `/v1/markets/{platform}/{market_id}/history`, `/v1/stream` |
-| Insight | $0.10 | `/v1/analyses`, `/v1/markets/{platform}/{market_id}/analysis`, `/v1/markets/{platform}/{market_id}/analyze`, `/v1/screen`, `/v1/markets/{platform}/{market_id}/resolution` |
-| Strategy | $2.00 | `/v1/signals`, `/v1/signals/portfolio`, `/v1/markets/{platform}/{market_id}/execution`, `/v1/trades/report`, `/v1/markets/{platform}/{market_id}/consensus` |
-| Deep | $5.00 | `/v1/arbitrage`, `/v1/arbitrage/live`, `/v1/correlation`, `/v1/webhooks` |
+| Listing | $0.01 | `/v1/markets`, `/v1/markets/{platform}/{market_id}`, `/v1/markets/{platform}/{market_id}/history`, `/v1/events`, `/v1/events/trending`, `/v1/events/search`, `/v1/events/{slug}`, `/v1/events/{slug}/markets`, `/v1/stream`, `/v1/sentiment`, `/v1/performance`, `/v1/performance/history` |
+| Insight | $0.10 | `/v1/analyses`, `/v1/markets/{platform}/{market_id}/analysis`, `/v1/markets/{platform}/{market_id}/analyze`, `/v1/screen`, `/v1/markets/{platform}/{market_id}/resolution`, `/v1/events/{slug}/analyze`, `/v1/events/{slug}/analysis`, `/v1/events/{slug}/probability-map` |
+| Strategy | $2.00 | `/v1/signals`, `/v1/signals/portfolio`, `/v1/markets/{platform}/{market_id}/execution`, `/v1/trades/report`, `/v1/markets/{platform}/{market_id}/consensus`, `/v1/what-if` |
+| Deep | $5.00 | `/v1/arbitrage`, `/v1/arbitrage/live`, `/v1/correlation`, `/v1/events/{slug}/correlation`, `/v1/webhooks` |
 
 ## Endpoints
 
@@ -121,6 +121,27 @@ Check `/v1/pricing` for current rates. Tier pricing (x402 USDC on Base):
 | `/v1/markets` | GET | Browse current prediction markets | `source` ("kalshi"/"polymarket"/"robinhood"/""), `limit` (1-100) |
 | `/v1/markets/{platform}/{market_id}` | GET | Single market detail | `expand` (e.g. "analysis") |
 | `/v1/markets/{platform}/{market_id}/history` | GET | Price history | `period` ("48h"/"7d"/"30d"), `max_points` |
+
+### Events (Listing tier)
+
+Events group related individual markets (e.g., "Who will leave the Trump administration?" groups 32 individual outcome markets). Use events to browse thematically and discover markets you wouldn't find by keyword alone.
+
+| Endpoint | Method | Description | Key Parameters |
+|---|---|---|---|
+| `/v1/events` | GET | List prediction market events with aggregate stats | `source` ("kalshi"/"polymarket"/""), `category`, `featured` (bool), `limit` (1-100) |
+| `/v1/events/trending` | GET | Top events by trending score (volume + featured boost) | `limit` (1-50) |
+| `/v1/events/search` | GET | Hybrid full-text + semantic vector search across events | `q` (search query), `limit` (1-50) |
+| `/v1/events/{slug}` | GET | Single event detail with aggregate stats | `expand` (e.g. "markets") |
+| `/v1/events/{slug}/markets` | GET | All individual outcome markets within an event | — |
+
+### Event Analysis (Insight / Deep tier)
+
+| Endpoint | Method | Description | Tier | Key Parameters |
+|---|---|---|---|---|
+| `/v1/events/{slug}/analyze` | POST | Trigger AI analysis of an entire event (all sub-markets) | Insight | — |
+| `/v1/events/{slug}/analysis` | GET | Get latest event analysis | Insight | `expand` (e.g. "scenarios,causal") |
+| `/v1/events/{slug}/probability-map` | GET | Probability estimates for all sub-markets within an event | Insight | — |
+| `/v1/events/{slug}/correlation` | GET | Cross-market correlation analysis within an event | Deep | — |
 
 ### Screening & Discovery (Insight tier)
 
@@ -142,6 +163,7 @@ Check `/v1/pricing` for current rates. Tier pricing (x402 USDC on Base):
 | `/v1/markets/{platform}/{market_id}/execution` | GET | Execution guidance (spread, slippage, timing) | — |
 | `/v1/trades/report` | POST | Report a trade for consensus aggregation | `market_id`, `platform`, `side`, `size_usd`, `price` |
 | `/v1/markets/{platform}/{market_id}/consensus` | GET | Consensus probability from agent trades | `period` ("24h"/"7d"/"30d") |
+| `/v1/what-if` | POST | Scenario analysis — how a hypothetical would affect a market | `market_query`, `hypothesis`, `platform` |
 
 ### Deep Intelligence (Deep tier)
 
@@ -362,6 +384,35 @@ GET /v1/stream?events=whale_alert,price_shift
 
 # Option 2: Webhooks (async, agent receives POSTs)
 POST /v1/webhooks { "url": "https://my-agent.com/hook", "events": ["whale_alert", "analysis_complete"] }
+```
+
+### Pattern G: Event-Level Analysis
+
+Browse events for thematic market groups, then drill into sub-market probabilities:
+
+```
+1. GET /v1/events/trending?limit=10
+2. FOR each event with market_count > 5:
+     GET /v1/events/{slug}?expand=markets
+3. POST /v1/events/{slug}/analyze   (trigger event-level AI analysis)
+4. GET /v1/events/{slug}/probability-map   (ranked sub-market probabilities)
+5. IF any sub-market has high edge:
+     POST /v1/signals { "market_id": sub_market.id, "platform": event.platform } ?wait=true
+     -> chain to execution skill
+```
+
+### Pattern H: What-If Scenario Analysis
+
+Test how hypothetical scenarios would shift a market's probability:
+
+```
+1. POST /v1/what-if {
+     "market_query": "Will the Fed cut rates in June?",
+     "hypothesis": "CPI comes in at 4.2%, above consensus",
+     "platform": "kalshi"
+   }
+2. Response includes: base_probability, scenario_probability, delta, reasoning
+3. Use delta to gauge sensitivity — large swings signal fragile consensus
 ```
 
 ## x402 Payment Flow

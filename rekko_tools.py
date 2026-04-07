@@ -250,6 +250,60 @@ class RekkoClient:
         """
         return await self._request("GET", f"/v1/events/{slug}/markets")
 
+    async def analyze_event(self, slug: str) -> dict[str, Any]:
+        """Trigger an AI analysis of an entire event (all sub-markets).
+
+        Returns an analysis_id for polling. The analysis covers the event
+        holistically — ranking sub-markets, identifying surprises, and
+        producing a probability map.
+
+        Args:
+            slug: Event slug (e.g. 'kalshi:kxtrumpadminleave-26dec31').
+        """
+        return await self._request("POST", f"/v1/events/{slug}/analyze")
+
+    async def get_event_analysis(
+        self, slug: str, expand: str = ""
+    ) -> dict[str, Any]:
+        """Get the latest AI analysis for an event.
+
+        Args:
+            slug: Event slug (e.g. 'kalshi:kxtrumpadminleave-26dec31').
+            expand: Comma-separated expansions (e.g. "scenarios,causal").
+        """
+        params: dict[str, str] = {}
+        if expand:
+            params["expand"] = expand
+        return await self._request(
+            "GET", f"/v1/events/{slug}/analysis", params=params
+        )
+
+    async def get_event_probability_map(self, slug: str) -> dict[str, Any]:
+        """Get probability estimates for all sub-markets within an event.
+
+        Returns a map of market_id → probability with confidence intervals,
+        useful for comparing outcomes within a single event.
+
+        Args:
+            slug: Event slug (e.g. 'kalshi:kxtrumpadminleave-26dec31').
+        """
+        return await self._request(
+            "GET", f"/v1/events/{slug}/probability-map"
+        )
+
+    async def get_event_correlation(self, slug: str) -> dict[str, Any]:
+        """Get cross-market correlation analysis within an event.
+
+        Identifies which sub-markets within the event move together,
+        concentration risks, and hedge opportunities.
+
+        Args:
+            slug: Event slug (e.g. 'kalshi:kxtrumpadminleave-26dec31').
+        """
+        return await self._request(
+            "GET", f"/v1/events/{slug}/correlation"
+        )
+
     # -----------------------------------------------------------------
     # Screening & discovery
     # -----------------------------------------------------------------
@@ -457,6 +511,27 @@ class RekkoClient:
             f"/v1/markets/{platform}/{market_id}/consensus",
             params=params,
         )
+
+    async def what_if(
+        self,
+        market_query: str,
+        hypothesis: str,
+        platform: str = "",
+    ) -> dict[str, Any]:
+        """Analyze how a hypothetical scenario would affect a market's probability.
+
+        Args:
+            market_query: Market question, ticker, or URL.
+            hypothesis: Hypothetical scenario to evaluate (e.g. "Fed cuts rates by 50bps").
+            platform: Platform hint: "kalshi" or "polymarket".
+        """
+        body: dict[str, Any] = {
+            "market_query": market_query,
+            "hypothesis": hypothesis,
+        }
+        if platform:
+            body["platform"] = platform
+        return await self._request("POST", "/v1/what-if", json=body)
 
     # -----------------------------------------------------------------
     # Arbitrage
